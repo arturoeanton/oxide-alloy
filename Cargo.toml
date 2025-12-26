@@ -1,0 +1,14 @@
+[workspace]
+members = [
+    "crates/oxidz80",              # CPU: Core Zilog Z80 (8-bit) usado en Spectrum y Master System
+    "crates/oxid68k",              # CPU: Core Motorola 68000 (16/32-bit) usado en Mac, Palm y Genesis
+    "crates/oxid_display",         # Gráficos: Abstracción de ventana y renderizado de píxeles (minifb)
+    "crates/oxid_input",           # Entrada: Abstracción de entrada (teclado, mouse, etc)
+    "crates/oxide-core",           # Base: Contratos comunes, interfaces de Bus de Memoria y CPU traits
+    "crates/systems/oxid_spec",    # Sistema: Emulador de ZX Spectrum 48K
+    "crates/systems/oxid_palm",    # Sistema: Emulador de dispositivos Palm OS (arquitectura DragonBall)
+    "crates/systems/oxid_mac",     # Sistema: Emulador de Macintosh Classic
+    "crates/systems/oxid_master",  # Sistema: Emulador de SEGA Master System
+    "crates/systems/oxid_genesis", # Sistema: Emulador de SEGA Genesis (Arquitectura Dual 68k + Z80)
+]
+resolver = "2" # Gestión de dependencias moderna (Edition 2021+)

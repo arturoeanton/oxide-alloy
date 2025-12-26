@@ -1,0 +1,16 @@
+[package]
+name = "oxid_input"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+# Utilidad esencial para manejar estados de botones (Joypads y Teclados)
+# Permite hacer cosas como: flags.contains(Gamepad::UP | Gamepad::A)
+bitflags = "2.4"
+
+# Necesitamos acceso a los tipos básicos del sistema
+oxide-core = { path = "../oxide-core" }
+
+# Importamos minifb para poder usar sus códigos de tecla (Key::A, Key::Enter)
+# Esto nos permite crear "Mapas de Input" agnósticos en esta librería.
+minifb = "0.24"

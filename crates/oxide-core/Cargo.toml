@@ -1,0 +1,11 @@
+[package]
+name = "oxide-core"
+version = "0.1.0"
+authors = ["Arturo E. Anton"]
+edition = "2021"
+description = "Traits y protocolos comunes para el ecosistema Oxide-Alloy"
+license = "Apache-2.0"
+
+
+[dependencies]
+thiserror = "1.0"

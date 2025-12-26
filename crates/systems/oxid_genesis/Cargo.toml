@@ -1,0 +1,10 @@
+# ./crates/systems/oxid_genesis/Cargo.toml
+[package]
+name = "oxid_genesis"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+oxide-core = { path = "../../oxide-core" }
+oxidz80 = { path = "../../oxidz80" }
+oxid68k = { path = "../../oxid68k" }

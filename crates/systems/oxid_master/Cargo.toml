@@ -1,0 +1,11 @@
+[package]
+name = "oxid_master"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+oxide-core = { path = "../../oxide-core" }
+oxidz80 = { path = "../../oxidz80" }
+oxid_display = { path = "../../oxid_display" }
+oxid_input = { path = "../../oxid_input" }
+minifb = "0.24.0"

@@ -1,0 +1,8 @@
+[package]
+name = "oxid_mac"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+oxide-core = { path = "../../oxide-core" }
+oxid68k = { path = "../../oxid68k" }
