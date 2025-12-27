@@ -20,8 +20,12 @@ pub struct MasterSystemBus {
     pub rom_mask: usize,
     /// Estado del Joypad (puertos $DC-$DD).
     pub joypad: u8,
+    /// Joypad 2 / Misc ($DD).
+    pub joypad_2: u8,
     /// Valor del V-Counter (simulado para puerto $7E).
     pub v_counter: u8,
+    /// Valor del H-Counter (simulado para puerto $7F).
+    pub h_counter: u8,
 }
 
 impl MasterSystemBus {
@@ -43,7 +47,9 @@ impl MasterSystemBus {
             paged_rom: [0, 0x4000, 0x8000], 
             rom_mask: mask,
             joypad: 0xFF, // Pull-up resistors (1=no pulsado)
+            joypad_2: 0xFF,
             v_counter: 0,
+            h_counter: 0,
         }
     }
 
@@ -127,25 +133,30 @@ impl MemoryBus for MasterSystemBus {
         let p = port & 0xFF;
         
         match p {
-            // $7E: V-Counter (Línea vertical actual)
+            // Specific Counters
             0x7E => self.v_counter,
+            0x7F => self.h_counter,
+
+            // VDP Ports ($80-$BF). Even=Data, Odd=Status/Control
+            0x80..=0xBF => {
+                if p & 1 == 0 {
+                    self.vdp.read_data()
+                } else {
+                    self.vdp.read_status()
+                }
+            },
+
+            // Joypads ($C0-$DF mirrors $DC-$DD)
+            // $DC (Even): Port A (Joypad 1)
+            // $DD (Odd): Port B (Joypad 2)
+            0xC0..=0xDF => {
+                if p & 1 == 0 {
+                    self.joypad
+                } else {
+                    self.joypad_2
+                }
+            },
             
-            // $7F: H-Counter (Posición horizontal aprox). Stub.
-            0x7F => 0x00,
-
-            // $BE: VDP Data Port (Buffer de lectura)
-            0xBE => self.vdp.read_data(),
-
-            // $BF: VDP Control/Status Port (Flags de interrupción, overflow, etc)
-            0xBF => self.vdp.read_status(),
-
-            // $DC: Joypad 1 / 2 Port A
-            0xDC => self.joypad,
-
-            // $DD: Joypad 2 Port B / Misc
-            0xDD => 0xFF, 
-
-            // Otros puertos pueden devolver 0xFF o bus flotante
             _ => 0xFF
         }
     }
@@ -153,21 +164,17 @@ impl MemoryBus for MasterSystemBus {
     fn port_out(&mut self, port: u16, value: u8) {
         let p = port & 0xFF;
         match p {
-            // $7E-$7F: PSG (Programmable Sound Generator)
-            0x7E | 0x7F => {
-                // TODO: Implementar PSG
-            }
+            // $7E-$7F: PSG
+            0x7E | 0x7F => {}, // PSG Stub
 
-            // $BE: VDP Data Port
-            0xBE => self.vdp.write_data(value),
-
-            // $BF: VDP Control Port
-            0xBF => self.vdp.write_control(value),
-
-            // $3F: I/O Control (Bios/Ram enable, etc - Avanzado)
-            0x3F => {
-                // No implementado en esta versión básica
-            }
+            // VDP Ports ($80-$BF). Even=Data, Odd=Control
+            0x80..=0xBF => {
+                if p & 1 == 0 {
+                    self.vdp.write_data(value)
+                } else {
+                    self.vdp.write_control(value)
+                }
+            },
             
             _ => {}
         }

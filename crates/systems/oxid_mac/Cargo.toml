@@ -6,3 +6,4 @@ edition = "2021"
 [dependencies]
 oxide-core = { path = "../../oxide-core" }
 oxid68k = { path = "../../oxid68k" }
+minifb = "0.20"

@@ -54,6 +54,10 @@ fn main() {
             let mut cycles_this_line = 0;
             while cycles_this_line < 228 { 
                 cycles_this_line += cpu.step(&mut bus);
+                
+                // Emulate H-Counter (Approximate)
+                // 228 CPU cycles ~ 342 pixels. Map to 0-255 range linear is enough for Sonic RNG/Sync.
+                bus.h_counter = ((cycles_this_line * 255) / 228) as u8;
             }
 
             if y < 192 {

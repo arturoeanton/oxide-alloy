@@ -10,7 +10,7 @@ use thiserror::Error;
 pub trait Cpu {
     /// Reinicio en frío (Power On)
     fn reset(&mut self);
-    
+
     /// Reinicio con acceso al bus (necesario para 68k que lee vectores de reset)
     fn reset_with_bus(&mut self, _bus: &mut dyn MemoryBus) {
         self.reset();
@@ -33,11 +33,13 @@ pub trait MemoryBus {
     // --- Métodos de I/O (Puertos) ---
     // Tienen implementación por defecto para sistemas que no usan puertos (como consolas puras memory-mapped)
     // o para no obligar a implementarlos si no se necesitan.
-    fn port_in(&mut self, _port: u16) -> u8 { 0xFF } // Bus flotante devuelve FF
-    fn port_out(&mut self, _port: u16, _val: u8) {}  // Escritura al vacío
+    fn port_in(&mut self, _port: u16) -> u8 {
+        0xFF
+    } // Bus flotante devuelve FF
+    fn port_out(&mut self, _port: u16, _val: u8) {} // Escritura al vacío
 
     // --- Helpers Automáticos (Default Impls) ---
-    
+
     // Lectura 16-bit Big Endian (Motorola 68k)
     fn read_u16_be(&self, addr: u32) -> u16 {
         let hi = self.read(addr) as u16;
@@ -76,7 +78,16 @@ pub trait MemoryBus {
     }
 
     // Compatibilidad Legacy para oxid68k (Asume Big Endian por defecto)
-    fn read_u16(&self, addr: u32) -> u16 { self.read_u16_be(addr) }
+    fn read_u16(&self, addr: u32) -> u16 {
+        self.read_u16_be(addr)
+    }
+
+    // --- Bus Error Signaling (Optional) ---
+    // Returns Some(address) if the last operation failed
+    fn bus_error(&self) -> Option<u32> {
+        None
+    }
+    fn ack_bus_error(&mut self) {}
 }
 
 // Eliminamos el trait IoBus separado porque ahora vive dentro de MemoryBus.
@@ -108,6 +119,8 @@ impl Rom {
 
     /// Crea una ROM vacía de tamaño fijo (útil para tests)
     pub fn new_empty(size: usize) -> Self {
-        Self { data: vec![0; size] }
+        Self {
+            data: vec![0; size],
+        }
     }
 }

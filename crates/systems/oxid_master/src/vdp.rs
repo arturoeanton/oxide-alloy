@@ -238,7 +238,7 @@ impl Vdp {
     fn render_background(&mut self, y: usize, buffer: &mut [(u8, bool)]) {
         let scroll_x = self.regs[8] as usize;
         let scroll_y = self.regs[9] as usize;
-        let name_table_base = ((self.regs[2] as usize & 0x0E) << 10); // $3800
+        let name_table_base = (self.regs[2] as usize & 0x0E) << 10; // $3800
         
         // Scroll Locking
         let h_scroll_inh = (self.regs[0] & 0x40) != 0 && y < 16;
@@ -296,7 +296,7 @@ impl Vdp {
     }
 
     fn render_sprites(&mut self, y: usize, buffer: &mut [(u8, u8)]) {
-        let sprite_attr_base = ((self.regs[5] as usize & 0x7E) << 7);
+        let sprite_attr_base = (self.regs[5] as usize & 0x7E) << 7;
         let sprite_pattern_base = if (self.regs[6] & 0x04) != 0 { 0x2000 } else { 0x0000 };
         let sprite_size_16 = (self.regs[1] & 0x02) != 0;
         let sprite_shift = (self.regs[0] & 0x08) != 0;
